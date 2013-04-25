@@ -1,13 +1,13 @@
 {
-  "name": "application-name",
+  "name": "metaphorpsum",
   "version": "0.0.1",
-  "private": true,
+  // "private": true,
   "scripts": {
     "start": "node app.js"
   },
   "dependencies": {
     "express": "3.2.0",
-    "ejs": "*",
-    "less-middleware": "*"
+    "ejs": "0.8.3",
+    "less-middleware": "0.1.11"
   }
 }
