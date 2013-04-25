@@ -1,7 +1,6 @@
 {
   "name": "metaphorpsum",
-  "version": "0.0.1",
-  // "private": true,
+  "version": "0.0.1-1",
   "scripts": {
     "start": "node app.js"
   },
@@ -9,5 +8,9 @@
     "express": "3.2.0",
     "ejs": "0.8.3",
     "less-middleware": "0.1.11"
+  },
+  "subdomain": "metaphorpsum",
+  "engines": {
+    "node": "0.8.x"
   }
 }

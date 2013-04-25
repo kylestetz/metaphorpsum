@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <title>Metaphorpsum</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <div class="wrap">
+      <div class="title">
+        <h3>Metaphorpsum</h3>
+        <p>A generator of metaphor.</p>
+      </div>
+      <div class="metaphor">
+        <%= sentences %>
+      </div>
+      <div class="instructions">
+        Make an AJAX request to <a href="/sentences/5">metaphorpsum.jit.su/sentences/5</a> to get some more.
+      </div>
+    </div>
   </body>
 </html>

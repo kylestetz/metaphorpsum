@@ -1,7 +1,29 @@
+* {
+  margin: 0 auto;
+}
 body {
-  padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  background: #87A6C9;
+}
+body h3 {
+  font-size: 30px;
+  margin-bottom: 10px;
 }
 a {
-  color: #00B7FF;
+  color: #7A2D2D;
+}
+.wrap {
+  max-width: 900px;
+  margin-top: 100px;
+  color: #344961;
+}
+.wrap .title {
+  text-align: center;
+  margin-bottom: 60px;
+}
+.wrap .metaphor {
+  margin-bottom: 60px;
+}
+.wrap .instructions {
+  text-align: center;
 }

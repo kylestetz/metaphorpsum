@@ -7,46 +7,35 @@ var adjectives = require('./adjectives.js').adjectives;
 var nouns = require('./nouns.js').nouns;
 
 exports.index = function(req, res){
-  res.render('index', { title: 'Express' });
+  res.render('index', { sentences: generate(6) });
 };
 
 exports.generateSentences = function(req, res){
   var numberOfSentences = 4;
   if(req.params.number) numberOfSentences = req.params.number;
-  var sentences = "";
-
-  for(var i = 0; i < numberOfSentences; i++) {
-    sentences += capitalizeFirstLetter(makeSentenceFromTemplate());
-    sentences += ". ";
-  }
+  var sentences = generate(numberOfSentences);
 
   res.send(sentences);
-
-  // var cap = true;
-  // for(var i = 0; i < numberOfSentences; i++) {
-  //   // maybe add a starting phrase...
-  //   if(i != 0) {
-  //     var phrase = randomStartingPhrase();
-  //     if(phrase){
-  //       cap = false;
-  //       sentences += phrase;
-  //     } else {
-  //       cap = true;
-  //     }
-  //   }
-
-  //   if(cap){
-  //     sentences += capitalizeFirstLetter(nounWithAOrAn()) + " is like " + nounWithAOrAn() + " in " + nounWithAOrAn() + ".";
-  //   } else {
-  //     sentences += nounWithAOrAn() + " is like " + nounWithAOrAn() + " in " + nounWithAOrAn() + ".";
-  //   }
-
-  //   if(i < numberOfSentences - 1) {
-  //     sentences += " ";
-  //   }
-  // }
-  // res.send(sentences);
 };
+
+function generate(numberOfSentences) {
+  var sentences = capitalizeFirstLetter(makeSentenceFromTemplate());
+  sentences += ". ";
+
+  var cap = true;
+  for(var i = 0; i < numberOfSentences - 1; i++) {
+    var phrase = randomStartingPhrase();
+
+    if(phrase){ cap = false; sentences += phrase; }
+    else { cap = true; }
+
+    var s = makeSentenceFromTemplate();
+    if(cap) s = capitalizeFirstLetter(s);
+    sentences += s;
+    sentences += ". ";
+  }
+  return sentences;
+}
 
 function noun() {
   return randomSelection(nouns);
@@ -108,7 +97,10 @@ var phrases = [
   "It's an undeniable fact, really; ",
   "Framed in a different way, ",
   "What we don't know for sure is whether or not ",
-  "As far as we can estimate, "
+  "As far as we can estimate, ",
+  "The pedantic academic would easily confuse the idea that ",
+  "The zeitgeist contends that ",
+  "Though we assume the latter, "
 ];
 
 // TEMPLATES
@@ -151,5 +143,11 @@ var sentenceTemplates = [
   "(a/an) %n% is (a/an) %a% %n%",
   "the first %a% %n% is, in its own way, (a/an) %n%",
   "their %n% was, in this moment, (a/an) %a% %n%",
-  "(a/an) %n% is (a/an) %n% from the right perspective"
+  "(a/an) %n% is (a/an) %n% from the right perspective",
+  "the literature would have us believe that (a/an) %a% %n% is not but (a/an) %n%",
+  "(a/an) %a% %n% is (a/an) %n% of the mind",
+  "the %a% %n% reveals itself as (a/an) %a% %n% to those who look",
+  "authors often misinterpret the %n% as (a/an) %a% %n%, when in actuality it feels more like (a/an) %a% %n%",
+  "we can assume that any instance of (a/an) %n% can be construed as (a/an) %a% %n%",
+  "they were lost without the %a% %n% that composed their %n%"
 ];
