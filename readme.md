@@ -8,6 +8,6 @@ API
 
 [/paragraphs/`<numberOfParagraphs>`](http://metaphorpsum.jit.su/paragraphs/2)
 
-[/paragraphs/`<numberOfParagraphs>/<numberOfSentences>`](http://metaphorpsum.jit.su/paragraphs/2/4)
+[/paragraphs/`<numberOfParagraphs>`/`<numberOfSentences>`](http://metaphorpsum.jit.su/paragraphs/2/4)
 
 [/sentences/`<number>`](http://metaphorpsum.jit.su/sentences/4)
