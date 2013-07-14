@@ -6,5 +6,6 @@ A simple, if not slightly pedantic, node app for generating heady metaphors. See
 API
 ===
 
-At present there is only one route:
-[/sentences/number](http://metaphorpsum.jit.su/sentences/6)
+[/paragraphs/<numberOfParagraphs>](http://metaphorpsum.jit.su/paragraphs/2)
+[/paragraphs/<numberOfParagraphs>/<numberOfSentences>](http://metaphorpsum.jit.su/paragraphs/2/4)
+[/sentences/<number>](http://metaphorpsum.jit.su/sentences/4)
