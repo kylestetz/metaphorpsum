@@ -1,20 +1,65 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Metaphorpsum</title>
+    <title>Lorem Metaphorpsum</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script type="text/javascript" src="/javascripts/jquery-2.0.3.js"></script>
+    <script type="text/javascript" src="/javascripts/site.js"></script>
   </head>
   <body>
     <div class="wrap">
-      <div class="title">
-        <h3>Metaphorpsum</h3>
-        <p>A generator of metaphor.</p>
+      <div class="block">
+        <div class="title section">
+          <h3 data-name="title">Metaphorpsum</h3>
+          <p>A wise, if not slightly pedantic, generator of metaphor.</p>
+        </div>
       </div>
-      <div class="metaphor">
-        <%= sentences %>
+      <div class="block white">
+        <div class="metaphor section">
+          <blockquote><p class="metaphor-text"><%= sentences %></p></blockquote>
+        </div>
       </div>
-      <div class="instructions">
-        Make an AJAX request to <a href="/sentences/5">metaphorpsum.jit.su/sentences/5</a> to get some more.
+      <div class="block">
+        <div class="generate section clearfix">
+          <h3>Options</h3>
+          <p>Give me <input type="text" class="number" data-name="paragraphs" value="2" maxlength="2" /> paragraph(s) containing <input type="text" class="number" data-name="sentences" value="4" maxlength="2" /> sentence(s) each; <select class="p-tags" data-name="p-tags"><option value="0" selected>do not</option><option value="1">please</option></select> wrap them in &lt;p&gt; tags.</p>
+          <button class="button float" data-name="generate">Generate</button>
+          <p id="error" class="text-red float">Huh? Numbers please. Above 0.</p>
+        </div>
+      </div>
+      <div class="block red">
+        <div class="usage section">
+          <h3>API Usage</h3>
+          <div class="text-block">
+            <p>Get paragraphs by sending an AJAX request to</p>
+            <p><a href="/paragraphs/2">metaphorpsum.jit.su/paragraphs/&lt;numberOfParagraphs&gt;</a></p>
+            <p><a href="/paragraphs/2/4">metaphorpsum.jit.su/paragraphs/&lt;numberOfParagraphs&gt;/&lt;numberOfSentences&gt;</a></p>
+            <p>limit: 20 paragraphs / 50 sentences</p>
+          </div>
+          <div class="text-block">
+            <p>Or just grab a few sentences by hitting</p>
+            <p><a href="/sentences/5">metaphorpsum.jit.su/sentences/&lt;numberOfSentences&gt;</a></p>
+          </div>
+          <div class="text-block">
+            <p>Add a URL parameter p=true to get each paragraph in &lt;p&gt; tags</p>
+            <p><a href="/paragraphs/3?p=true">metaphorpsum.jit.su/paragraphs/3?p=true</a></p>
+          </div>
+          <div class="text-block">
+            <p>Using OS X or Linux? Try this in the command line:</p>
+            <p class="text-color">curl http://metaphorpsum.jit.su/sentences/3</p>
+          </div>
+          <div class="text-block clearfix">
+            <p>And here’s a nifty bash script that copies metaphorpsum straight to your clipboard</p>
+            <p class="text-color">function meta() { curl http://metaphorpsum.jit.su/sentences/$@ | pbcopy ;}</p>
+            <p class="float nudge-right">usage: <p class="float text-color">meta 5</p></p>
+          </div>
+        </div>
+      </div>
+      <div class="block">
+        <div class="credits section">
+          <p>Built and maintained by <a href="http://kylestetz.com">Kyle Stetz</a>. Get the source code on <a href="https://github.com/kylestetz/metaphorpsum">GitHub</a>.</p>
+        </div>
       </div>
     </div>
   </body>

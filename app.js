@@ -30,7 +30,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/sentences/:number', indexRoutes.generateSentences);
+app.get('/sentences/:number', indexRoutes.validate, indexRoutes.generateSentences);
+app.get('/paragraphs/:paragraphs/:sentences', indexRoutes.validate, indexRoutes.generateParagraphs);
+app.get('/paragraphs/:paragraphs', indexRoutes.validate, indexRoutes.generateParagraphs);
 app.get('/', indexRoutes.index);
 
 http.createServer(app).listen(app.get('port'), function(){

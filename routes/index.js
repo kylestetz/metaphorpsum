@@ -1,23 +1,69 @@
-
-/*
- * GET home page.
- */
-
 // pull in the adjectives and nouns stored in their JS files
 var adjectives = require('./adjectives.js').adjectives;
 var nouns = require('./nouns.js').nouns;
 
+function constrain(input, max) {
+  if(input > max) {
+    return max;
+  }
+  return input;
+}
+
+// this is our valide middleware to ensure that any requests stay below our limits
+exports.validate = function(req, res, next) {
+  if(req.params.number) {
+    req.params.number = constrain(req.params.number, 999);
+  }
+  if(req.params.sentences) {
+    req.params.sentences = constrain(req.params.sentences, 50);
+  }
+  if(req.params.paragraphs) {
+    req.params.paragraphs = constrain(req.params.paragraphs, 20);
+  }
+  next();
+};
+
 //    index route
 exports.index = function(req, res){
-  res.render('index', { sentences: generate(6) });
+  res.render('index', { sentences: generate(4) });
 };
+
+exports.generateParagraphs = function(req, res) {
+  var random = false;
+  if(!req.params.sentences) {
+    random = true;
+  }
+  var numOfParagraphs = req.params.paragraphs || 2;
+  var numberOfSentences = req.params.sentences || 4;
+  var pTags = req.query.p || false;
+
+  var paragraphString = "";
+  for(var i = 0; i < numOfParagraphs; i++) {
+    if(i > 0) {
+      paragraphString += "\n\n";
+    }
+    if(pTags) {
+      paragraphString += "<p>";
+    }
+    if(random) {
+      paragraphString += generate( Math.ceil( Math.random() * 8 ) );
+    } else {
+      paragraphString += generate(numberOfSentences);
+    }
+    if(pTags) {
+      paragraphString += "</p>"
+    }
+  }
+
+  res.setHeader("Content-Type", "text/plain");
+  res.send(paragraphString);
+}
 
 //    /sentence/:number
 exports.generateSentences = function(req, res){
-  var numberOfSentences = 4;
-  if(req.params.number) numberOfSentences = req.params.number;
+  var numberOfSentences = req.params.number || 4;
   var sentences = generate(numberOfSentences);
-
+  res.setHeader("Content-Type", "text/plain");
   res.send(sentences);
 };
 
@@ -38,7 +84,10 @@ function generate(numberOfSentences) {
     var s = makeSentenceFromTemplate();
     if(cap) s = capitalizeFirstLetter(s);
     sentences += s;
-    sentences += ". ";
+    sentences += ".";
+    if(i < numberOfSentences - 2) {
+      sentences += " ";
+    }
   }
 
   return sentences;
@@ -107,8 +156,10 @@ function makeSentenceFromTemplate() {
   // pick a template
   var t = randomSelection(sentenceTemplates);
 
+  // it's important that we check for "(a/an) %n%" before we check for %n% or we might have some false matches
   t = replaceAllOccurrences(t, "\\(a/an\\) %n%", nounWithAOrAn);
   t = replaceAllOccurrences(t, "\\(a/an\\) %a%", adjectiveWithAOrAn);
+  // now we can check for the solo guys
   t = replaceAllOccurrences(t, "%n%", noun);
   t = replaceAllOccurrences(t, "%a%", adjective);
   return t;
@@ -141,7 +192,13 @@ var sentenceTemplates = [
   "the %a% %n% reveals itself as (a/an) %a% %n% to those who look",
   "authors often misinterpret the %n% as (a/an) %a% %n%, when in actuality it feels more like (a/an) %a% %n%",
   "we can assume that any instance of (a/an) %n% can be construed as (a/an) %a% %n%",
-  "they were lost without the %a% %n% that composed their %n%"
+  "they were lost without the %a% %n% that composed their %n%",
+  "the %a% %n% comes from (a/an) %a% %n%",
+  "(a/an) %n% can hardly be considered (a/an) %a% %n% without also being (a/an) %n%",
+  "few can name (a/an) %a% %n% that isn't (a/an) %a% %n%",
+  "some posit the %a% %n% to be less than %a%",
+  "(a/an) %n% of the %n% is assumed to be (a/an) %a% %n%",
+  "(a/an) %n% sees (a/an) %n% as (a/an) %a% %n%"
 ];
 
 // partial phrases to start with. Capitalized.
@@ -152,8 +209,8 @@ var phrases = [
   "Some assert that ",
   "If this was somewhat unclear, ",
   "However, ",
-  "Unfortunately, that is wrong. On the contrary, ",
-  "Could this be? Perhaps ",
+  "Unfortunately, that is wrong; on the contrary, ",
+  "This could be, or perhaps ",
   "This is not to discredit the idea that ",
   "We do know that ",
   "It's an undeniable fact, really; ",
@@ -162,5 +219,6 @@ var phrases = [
   "As far as we can estimate, ",
   "The pedantic academic would easily confuse the idea that ",
   "The zeitgeist contends that ",
-  "Though we assume the latter, "
+  "Though we assume the latter, ",
+  "Far from the truth, "
 ];

@@ -1,6 +1,6 @@
 {
   "name": "metaphorpsum",
-  "version": "0.0.1-1",
+  "version": "0.0.1-2",
   "scripts": {
     "start": "node app.js"
   },
@@ -12,5 +12,6 @@
   "subdomain": "metaphorpsum",
   "engines": {
     "node": "0.8.x"
-  }
+  },
+  "main": "app.js"
 }
