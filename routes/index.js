@@ -9,7 +9,7 @@ function constrain(input, max) {
   return input;
 }
 
-// this is our valide middleware to ensure that any requests stay below our limits
+// this is our validation middleware to ensure that any requests stay below our limits
 exports.validate = function(req, res, next) {
   if(req.params.number) {
     req.params.number = constrain(req.params.number, 999);
@@ -46,7 +46,7 @@ exports.generateParagraphs = function(req, res) {
       paragraphString += "<p>";
     }
     if(random) {
-      paragraphString += generate( Math.ceil( Math.random() * 8 ) );
+      paragraphString += generate( Math.ceil( 3 + Math.random() * 5 ) );
     } else {
       paragraphString += generate(numberOfSentences);
     }
@@ -81,10 +81,16 @@ function generate(numberOfSentences) {
     if(phrase){ cap = false; sentences += phrase; }
     else { cap = true; }
 
+    // make a sentence!
     var s = makeSentenceFromTemplate();
+
+    // capitalize the first letter if that's what we should be doing.
+    // then add a period and toss it on to the heap.
     if(cap) s = capitalizeFirstLetter(s);
     sentences += s;
     sentences += ".";
+
+    // this is to ensure that our set of sentences doesn't end with a trailing space.
     if(i < numberOfSentences - 2) {
       sentences += " ";
     }
@@ -130,7 +136,7 @@ function vowelTest(s) {
 
 function capitalizeFirstLetter(string)
 {
-    return string.charAt(0).toUpperCase() + string.slice(1);
+  return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
 // returns a starting phrase about half the time, otherwise it's empty
