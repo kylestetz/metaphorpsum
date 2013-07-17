@@ -1,13 +1,13 @@
 Metaphorpsum
 ============
 
-A simple, if not slightly pedantic, node app for generating heady metaphors. See it in action at [metaphorpsum.jit.su](http://metaphorpsum.jit.su).
+A simple, if not slightly pedantic, node app for generating heady metaphors. See it in action at [metaphorpsum.com](http://metaphorpsum.com).
 
 API
 ===
 
-[/paragraphs/`<numberOfParagraphs>`](http://metaphorpsum.jit.su/paragraphs/2)
+[/paragraphs/`<numberOfParagraphs>`](http://metaphorpsum.com/paragraphs/2)
 
-[/paragraphs/`<numberOfParagraphs>`/`<numberOfSentences>`](http://metaphorpsum.jit.su/paragraphs/2/4)
+[/paragraphs/`<numberOfParagraphs>`/`<numberOfSentences>`](http://metaphorpsum.com/paragraphs/2/4)
 
-[/sentences/`<number>`](http://metaphorpsum.jit.su/sentences/4)
+[/sentences/`<number>`](http://metaphorpsum.com/sentences/4)
