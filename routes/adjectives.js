@@ -1,11 +1,12 @@
+// yes, we're going to be crude and load all the words into memory... it's really not so bad.
+// the list comes from this gem:
+// http://www.ashley-bovan.co.uk/words/partsofspeech.html
+
 module.exports.adjectives = ["abased",
 "abject",
-"ablaze",
-"abler",
-"ablest",
+"able",
 "abloom",
 "ablush",
-"about",
 "abreast",
 "abridged",
 "abroach",
@@ -28,7 +29,6 @@ module.exports.adjectives = ["abased",
 "acorned",
 "acred",
 "acrid",
-"across",
 "acting",
 "added",
 "addle",
