@@ -141,7 +141,7 @@ function capitalizeFirstLetter(string)
 
 // returns a starting phrase about half the time, otherwise it's empty
 function randomStartingPhrase() {
-  if(Math.random() < 0.5) {
+  if(Math.random() < 0.45) {
     return phrases[ Math.ceil(Math.random() * phrases.length) ];
   }
   return "";
@@ -204,7 +204,11 @@ var sentenceTemplates = [
   "few can name (a/an) %a% %n% that isn't (a/an) %a% %n%",
   "some posit the %a% %n% to be less than %a%",
   "(a/an) %n% of the %n% is assumed to be (a/an) %a% %n%",
-  "(a/an) %n% sees (a/an) %n% as (a/an) %a% %n%"
+  "(a/an) %n% sees (a/an) %n% as (a/an) %a% %n%",
+  "the %n% of (a/an) %n% becomes (a/an) %a% %n%",
+  "(a/an) %n% is (a/an) %n%'s %n%",
+  "(a/an) %n% is the %n% of (a/an) %n%",
+  "(a/an) %a% %n%'s %n% comes with it the thought that the %a% %n% is (a/an) %n%"
 ];
 
 // partial phrases to start with. Capitalized.
@@ -218,12 +222,11 @@ var phrases = [
   "Unfortunately, that is wrong; on the contrary, ",
   "This could be, or perhaps ",
   "This is not to discredit the idea that ",
-  "We do know that ",
+  "We know that ",
   "It's an undeniable fact, really; ",
   "Framed in a different way, ",
   "What we don't know for sure is whether or not ",
   "As far as we can estimate, ",
-  "The pedantic academic would easily confuse the idea that ",
   "The zeitgeist contends that ",
   "Though we assume the latter, ",
   "Far from the truth, "
