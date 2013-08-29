@@ -10,7 +10,8 @@
     "less-middleware": "0.1.11",
     "articles": "0.2.1",
     "lingo": "0.0.5",
-    "underscore": "*"
+    "underscore": "*",
+    "Articles": "*"
   },
   "main": "app.js"
 }
