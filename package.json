@@ -11,7 +11,7 @@
     "articles": "0.2.1",
     "lingo": "0.0.5",
     "underscore": "*",
-    "Articles": "*"
+    "articles": "*"
   },
   "main": "app.js"
 }
