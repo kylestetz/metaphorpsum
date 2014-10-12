@@ -1,20 +1,12 @@
-var sentencer = require('./sentencer.js');
-
-var nouns = require('./nouns.js').nouns;
-var adjectives = require('./adjectives.js').adjectives;
-
-sentencer.setNouns(nouns);
-sentencer.setAdjectives(adjectives);
+var Sentencer = require('sentencer');
+var randy = require('randy');
 
 function constrain(input, max) {
-  if(input > max) {
-    return max;
-  }
-  return input;
+  return Math.min(input, max);
 }
 
 // this is our validation middleware to ensure that any requests stay below our limits
-exports.validate = function(req, res, next) {
+function validate(req, res, next) {
   if(req.params.number) {
     req.params.number = constrain(req.params.number, 999);
   }
@@ -27,48 +19,21 @@ exports.validate = function(req, res, next) {
   next();
 };
 
-//    index route
-exports.index = function(req, res){
-  res.render('index', { sentences: generate(4) });
-};
+module.exports = function(app) {
 
-exports.generateParagraphs = function(req, res) {
-  var random = false;
-  if(!req.params.sentences) {
-    random = true;
-  }
-  var numOfParagraphs = req.params.paragraphs || 2;
-  var numberOfSentences = req.params.sentences || 4;
-  var pTags = req.query.p || false;
+  app.get('/', validate, function(req, res){
+    res.render('index', { sentences: generate(4) });
+  });
 
-  var paragraphString = "";
-  for(var i = 0; i < numOfParagraphs; i++) {
-    if(i > 0) {
-      paragraphString += "\n\n";
-    }
-    if(pTags) {
-      paragraphString += "<p>";
-    }
-    if(random) {
-      paragraphString += generate( Math.ceil( 3 + Math.random() * 5 ) );
-    } else {
-      paragraphString += generate(numberOfSentences);
-    }
-    if(pTags) {
-      paragraphString += "</p>"
-    }
-  }
+  app.get('/sentences/:number', validate, function(req, res){
+    var numberOfSentences = req.params.number || 4;
+    var sentences = generate(numberOfSentences);
+    res.setHeader("Content-Type", "text/plain");
+    res.send(sentences);
+  });
 
-  res.setHeader("Content-Type", "text/plain");
-  res.send(paragraphString);
-}
-
-//    /sentences/:number
-exports.generateSentences = function(req, res){
-  var numberOfSentences = req.params.number || 4;
-  var sentences = generate(numberOfSentences);
-  res.setHeader("Content-Type", "text/plain");
-  res.send(sentences);
+  app.get('/paragraphs/:paragraphs', validate, generateParagraphs);
+  app.get('/paragraphs/:paragraphs/:sentences', validate, generateParagraphs);
 };
 
 // does the sentence generating
@@ -103,8 +68,39 @@ function generate(numberOfSentences) {
   return sentences;
 }
 
+function generateParagraphs(req, res) {
+  var random = false;
+  if(!req.params.sentences) {
+    random = true;
+  }
+  var numOfParagraphs = req.params.paragraphs || 2;
+  var numberOfSentences = req.params.sentences || 4;
+  var pTags = req.query.p || false;
+
+  var paragraphString = "";
+  for(var i = 0; i < numOfParagraphs; i++) {
+    if(i > 0) {
+      paragraphString += "\n\n";
+    }
+    if(pTags) {
+      paragraphString += "<p>";
+    }
+    if(random) {
+      paragraphString += generate( Math.ceil( 3 + Math.random() * 5 ) );
+    } else {
+      paragraphString += generate(numberOfSentences);
+    }
+    if(pTags) {
+      paragraphString += "</p>";
+    }
+  }
+
+  res.setHeader("Content-Type", "text/plain");
+  res.send(paragraphString);
+}
+
 function makeSentenceFromTemplate() {
-  return  sentencer.make( randomSelection(sentenceTemplates) );
+  return Sentencer.make( randy.choice(sentenceTemplates) );
 }
 
 function capitalizeFirstLetter(string) {
@@ -114,14 +110,9 @@ function capitalizeFirstLetter(string) {
 // returns a starting phrase about half the time, otherwise it's empty
 function randomStartingPhrase() {
   if(Math.random() < 0.4) {
-    return phrases[ Math.ceil(Math.random() * phrases.length) ];
+    return randy.choice(phrases);
   }
   return "";
-}
-
-// take an array and return a random selection from it
-function randomSelection(l) {
-  return l[Math.ceil(Math.random() * l.length - 1)];
 }
 
 // style guide: no periods, no first capital letters.
