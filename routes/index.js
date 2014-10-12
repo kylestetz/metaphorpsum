@@ -1,5 +1,6 @@
 var Sentencer = require('sentencer');
 var randy = require('randy');
+var Readable = require('stream').Readable;
 
 function constrain(input, max) {
   return Math.min(input, max);
@@ -7,97 +8,114 @@ function constrain(input, max) {
 
 // this is our validation middleware to ensure that any requests stay below our limits
 function validate(req, res, next) {
-  if(req.params.number) {
-    req.params.number = constrain(req.params.number, 999);
-  }
-  if(req.params.sentences) {
-    req.params.sentences = constrain(req.params.sentences, 50);
-  }
-  if(req.params.paragraphs) {
-    req.params.paragraphs = constrain(req.params.paragraphs, 20);
-  }
+  if(req.params.number)     req.params.number     = constrain(req.params.number, 999);
+  if(req.params.sentences)  req.params.sentences  = constrain(req.params.sentences, 50);
+  if(req.params.paragraphs) req.params.paragraphs = constrain(req.params.paragraphs, 20);
   next();
-};
+}
+
+// ----------------------------------------------------------------------
+//                                ROUTES
+// ----------------------------------------------------------------------
 
 module.exports = function(app) {
 
+  // -------------------------------------------------------------- INDEX
   app.get('/', validate, function(req, res){
     res.render('index', { sentences: generate(4) });
   });
 
+  // ---------------------------------------------------------- SENTENCES
   app.get('/sentences/:number', validate, function(req, res){
     var numberOfSentences = req.params.number || 4;
-    var sentences = generate(numberOfSentences);
+    var sentenceStream = new Readable;
+    var count = 0;
+
+    sentenceStream._read = function() {
+      count++;
+
+      var last = (count === numberOfSentences);
+
+      if(last) {
+        return sentenceStream.push(null);
+      }
+
+      sentenceStream.push( generateSentenceForStream(last) );
+    };
+
     res.setHeader("Content-Type", "text/plain");
-    res.send(sentences);
+    sentenceStream.pipe(res);
   });
 
-  app.get('/paragraphs/:paragraphs', validate, generateParagraphs);
-  app.get('/paragraphs/:paragraphs/:sentences', validate, generateParagraphs);
+  // --------------------------------------------------------- PARAGRAPHS
+  app.get('/paragraphs/:paragraphs/:sentences?', validate, function(req, res) {
+    var numberOfParagraphs = req.params.paragraphs || 2;
+    var numberOfSentences  = req.params.sentences  || randy.randInt(3, 6);
+    var pTags = !!req.params.p;
+
+    var paragraphStream = new Readable;
+    var pCount = 1;
+    var sCount = 0;
+
+    paragraphStream._read = function() {
+      sCount++;
+
+      var endOfParagraph = (sCount === numberOfSentences);
+      var endOfStream    = (pCount === numberOfParagraphs);
+
+      if(sCount == 1 && pTags) {
+        paragraphStream.push("<p>");
+      }
+
+      paragraphStream.push( generateSentenceForStream(endOfParagraph) );
+
+      if(endOfParagraph && !endOfStream) {
+        paragraphStream.push( (pTags ? "</p>" : "") + "\n\n" );
+        sCount = 0;
+        if(!req.params.sentences) {
+          numberOfSentences = randy.randInt(3, 6);
+        }
+        pCount++;
+      }
+      if(endOfParagraph && endOfStream) {
+        if(pTags) {
+          paragraphStream.push("</p>");
+        }
+        return paragraphStream.push(null);
+      }
+    };
+
+    res.setHeader("Content-Type", "text/plain");
+    paragraphStream.pipe(res);
+  });
 };
 
-// does the sentence generating
+// generate sentences synchronously...
+// useful for the homepage.
 function generate(numberOfSentences) {
-  var sentences = capitalizeFirstLetter(makeSentenceFromTemplate());
-  sentences += ". ";
-
-  // if we get a phrase back from randomStartingPhrase()
-  // we do not have to capitalize the first letter of the sentence.
-  var cap = true;
-  for(var i = 0; i < numberOfSentences - 1; i++) {
-    var phrase = randomStartingPhrase();
-
-    if(phrase){ cap = false; sentences += phrase; }
-    else { cap = true; }
-
-    // make a sentence!
-    var s = makeSentenceFromTemplate();
-
-    // capitalize the first letter if that's what we should be doing.
-    // then add a period and toss it on to the heap.
-    if(cap) s = capitalizeFirstLetter(s);
-    sentences += s;
-    sentences += ".";
-
-    // this is to ensure that our set of sentences doesn't end with a trailing space.
-    if(i < numberOfSentences - 2) {
-      sentences += " ";
-    }
+  var sentences = "";
+  var i = 0;
+  for(i; i < numberOfSentences; i++) {
+    sentences += capitalizeFirstLetter( randomStartingPhrase() + makeSentenceFromTemplate()) + ".";
+    sentences += (numberOfSentences > 1) ? " " : "";
   }
-
   return sentences;
 }
 
-function generateParagraphs(req, res) {
-  var random = false;
-  if(!req.params.sentences) {
-    random = true;
-  }
-  var numOfParagraphs = req.params.paragraphs || 2;
-  var numberOfSentences = req.params.sentences || 4;
-  var pTags = req.query.p || false;
-
-  var paragraphString = "";
-  for(var i = 0; i < numOfParagraphs; i++) {
-    if(i > 0) {
-      paragraphString += "\n\n";
-    }
-    if(pTags) {
-      paragraphString += "<p>";
-    }
-    if(random) {
-      paragraphString += generate( Math.ceil( 3 + Math.random() * 5 ) );
-    } else {
-      paragraphString += generate(numberOfSentences);
-    }
-    if(pTags) {
-      paragraphString += "</p>";
-    }
-  }
-
-  res.setHeader("Content-Type", "text/plain");
-  res.send(paragraphString);
+// generate one sentence at a time
+// for use in a stream.
+function generateSentenceForStream(last) {
+  // make a sentence. perhaps it has a starting phrase.
+  var phrase = randomStartingPhrase();
+  var sentence = capitalizeFirstLetter( phrase + makeSentenceFromTemplate() ) + ".";
+  // add a space if it's not the last one
+  sentence += ((last) ? "" : " ");
+  return sentence;
 }
+
+// ----------------------------------------------------------------------
+//                      TEMPLATES & CONVENIENCE F()s
+// ----------------------------------------------------------------------
 
 function makeSentenceFromTemplate() {
   return Sentencer.make( randy.choice(sentenceTemplates) );
@@ -107,9 +125,9 @@ function capitalizeFirstLetter(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
 }
 
-// returns a starting phrase about half the time, otherwise it's empty
+// returns a starting phrase about a third of the time, otherwise it's empty
 function randomStartingPhrase() {
-  if(Math.random() < 0.4) {
+  if(Math.random() < 0.33) {
     return randy.choice(phrases);
   }
   return "";
@@ -141,7 +159,11 @@ var sentenceTemplates = [
   "{{ nouns }} are {{ adjective }} {{ nouns }}",
   "{{ adjective }} {{ nouns }} show us how {{ nouns }} can be {{ nouns }}",
   "before {{ nouns }}, {{ nouns }} were only {{ nouns }}",
-  "those {{ nouns }} are nothing more than {{ nouns }}"
+  "those {{ nouns }} are nothing more than {{ nouns }}",
+  "some {{ adjective }} {{ nouns }} are thought of simply as {{ nouns }}",
+  "one cannot separate {{ nouns }} from {{ adjective }} {{ nouns }}",
+  "the {{ nouns }} could be said to resemble {{ adjective }} {{ nouns }}",
+  "{{ an_adjective }} {{ noun }} without {{ nouns }} is truly a {{ noun }} of {{ adjective }} {{ nouns }}"
 ];
 
 // partial phrases to start with. Capitalized.
@@ -162,5 +184,10 @@ var phrases = [
   "As far as we can estimate, ",
   "The zeitgeist contends that ",
   "Though we assume the latter, ",
-  "Far from the truth, "
+  "Far from the truth, ",
+  "Extending this logic, ",
+  "Nowhere is it disputed that ",
+  "In modern times ",
+  "In ancient times ",
+  "Recent controversy aside, "
 ];
