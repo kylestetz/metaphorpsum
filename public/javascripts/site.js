@@ -9,7 +9,7 @@ $( function() {
     var sentences = $('[data-name="sentences"]').val();
     var ptags = $('[data-name="p-tags"]').val();
 
-    if(!isNumber(paragraphs) || !isNumber(sentences) || paragraphs == 0 || sentences == 0) {
+    if(!isNumber(paragraphs) || !isNumber(sentences) || paragraphs <= 0 || sentences <= 0) {
       $('#error').show();
       return;
     }

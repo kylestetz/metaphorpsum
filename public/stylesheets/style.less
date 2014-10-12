@@ -162,7 +162,12 @@ body
   .section
   {
     max-width: 960px;
-    padding: 40px;
+    padding: 80px 40px;
+
+    &.section--short
+    {
+      padding: 40px;
+    }
   }
 
   .title
@@ -170,7 +175,7 @@ body
     h3
     {
       display: inline-block;
-      border-bottom: 4px solid @red;
+      // border-bottom: 4px solid @red;
       color: @red;
 
       -webkit-touch-callout: none;
@@ -264,6 +269,7 @@ body
     border: none;
     .narrator;
     color: @red;
+    text-align: center;
     &:focus
     {
       border: 2px solid @red;
@@ -274,7 +280,7 @@ body
   .p-tags
   {
     width: 70px;
-    padding: 4px;
+    padding: 4px 8px;
     background: transparent;
     background-color: white;
     outline: 0;
@@ -283,10 +289,11 @@ body
     -webkit-appearance: none;
     .narrator;
     color: @red;
+    text-align: center;
     &:focus
     {
       border: 2px solid @red;
-      padding: 2px;
+      padding: 2px 6px;
     }
   }
 }

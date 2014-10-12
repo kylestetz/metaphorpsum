@@ -127,11 +127,13 @@ body {
 }
 .wrap .section {
   max-width: 960px;
+  padding: 80px 40px;
+}
+.wrap .section.section--short {
   padding: 40px;
 }
 .wrap .title h3 {
   display: inline-block;
-  border-bottom: 4px solid #df4b4e;
   color: #df4b4e;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
@@ -203,6 +205,7 @@ body {
   font-family: 'narratorregular', Helvetica, sans-serif;
   font-size: 18px;
   color: #df4b4e;
+  text-align: center;
 }
 .generate .number:focus {
   border: 2px solid #df4b4e;
@@ -211,7 +214,7 @@ body {
 }
 .generate .p-tags {
   width: 70px;
-  padding: 4px;
+  padding: 4px 8px;
   background: transparent;
   background-color: white;
   outline: 0;
@@ -221,10 +224,11 @@ body {
   font-family: 'narratorregular', Helvetica, sans-serif;
   font-size: 18px;
   color: #df4b4e;
+  text-align: center;
 }
 .generate .p-tags:focus {
   border: 2px solid #df4b4e;
-  padding: 2px;
+  padding: 2px 6px;
 }
 .button {
   margin-top: 20px;
