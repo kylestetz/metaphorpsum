@@ -36,11 +36,11 @@ module.exports = function(app) {
 
       var last = (count === numberOfSentences);
 
+      sentenceStream.push( generateSentenceForStream(last) );
+
       if(last) {
         return sentenceStream.push(null);
       }
-
-      sentenceStream.push( generateSentenceForStream(last) );
     };
 
     res.setHeader("Content-Type", "text/plain");
