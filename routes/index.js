@@ -51,7 +51,7 @@ module.exports = function(app) {
   app.get('/paragraphs/:paragraphs/:sentences?', validate, function(req, res) {
     var numberOfParagraphs = req.params.paragraphs || 2;
     var numberOfSentences  = req.params.sentences  || randy.randInt(3, 6);
-    var pTags = !!req.params.p;
+    var pTags = !!req.query.p;
 
     var paragraphStream = new Readable;
     var pCount = 1;
