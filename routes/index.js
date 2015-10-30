@@ -173,7 +173,6 @@ var phrases = [
   "However, ",
   "Some assert that ",
   "If this was somewhat unclear, ",
-  "However, ",
   "Unfortunately, that is wrong; on the contrary, ",
   "This could be, or perhaps ",
   "This is not to discredit the idea that ",
