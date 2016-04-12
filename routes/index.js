@@ -31,19 +31,34 @@ module.exports = function(app) {
     var sentenceStream = new Readable;
     var count = 0;
 
+    var jsonFormat = req.query.format === 'json' ? true : false;
+
     sentenceStream._read = function() {
       count++;
+
+      if(jsonFormat && count === 1){
+        sentenceStream.push('{"text":"');
+      }
 
       var last = (count === numberOfSentences);
 
       sentenceStream.push( generateSentenceForStream(last) );
 
       if(last) {
+        if(jsonFormat){
+          sentenceStream.push('"}');
+        }
+
         return sentenceStream.push(null);
       }
     };
 
-    res.setHeader("Content-Type", "text/plain");
+    if(jsonFormat){
+      res.setHeader("Content-Type", "application/json");
+    } else {
+      res.setHeader("Content-Type", "text/plain");
+    }
+
     sentenceStream.pipe(res);
   });
 
@@ -57,8 +72,16 @@ module.exports = function(app) {
     var pCount = 1;
     var sCount = 0;
 
+    var pJsonFormat = req.query.format === 'json' ? true : false;
+    var loopCount = 0;
+
     paragraphStream._read = function() {
       sCount++;
+      loopCount++;
+
+      if(pJsonFormat && loopCount === 1){
+        paragraphStream.push('{"text":"');
+      }
 
       var endOfParagraph = (sCount === numberOfSentences);
       var endOfStream    = (pCount === numberOfParagraphs);
@@ -81,11 +104,21 @@ module.exports = function(app) {
         if(pTags) {
           paragraphStream.push("</p>");
         }
+
+        if(pJsonFormat){
+          paragraphStream.push('"}');
+        }
+
         return paragraphStream.push(null);
       }
     };
 
-    res.setHeader("Content-Type", "text/plain");
+    if(pJsonFormat){
+      res.setHeader("Content-Type", "application/json");
+    } else {
+      res.setHeader("Content-Type", "text/plain");
+    }
+
     paragraphStream.pipe(res);
   });
 };
