@@ -9,7 +9,8 @@ var express = require('express')
   , routes = require('./routes')
   , indexRoutes = require('./routes/index')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , cors = require('cors');
 
 var app = express();
 
@@ -20,6 +21,7 @@ app.set('view engine', 'ejs');
 app.use(express.favicon('public/favicon.ico'));
 // you'll want to uncomment this if you're developing locally.
 // app.use(express.logger('dev'));
+app.use(cors());
 app.use(express.bodyParser());
 app.use(express.methodOverride());
   app.use(express.cookieParser('metaphorpsum'));
