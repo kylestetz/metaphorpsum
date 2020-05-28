@@ -5,6 +5,7 @@
     "start": "node app.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "ejs": "0.8.3",
     "express": "3.2.0",
     "less-middleware": "2.0.1",
