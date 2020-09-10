@@ -196,7 +196,7 @@ var sentenceTemplates = [
   "some {{ adjective }} {{ nouns }} are thought of simply as {{ nouns }}",
   "one cannot separate {{ nouns }} from {{ adjective }} {{ nouns }}",
   "the {{ nouns }} could be said to resemble {{ adjective }} {{ nouns }}",
-  "{{ an_adjective }} {{ noun }} without {{ nouns }} is truly a {{ noun }} of {{ adjective }} {{ nouns }}"
+  "{{ an_adjective }} {{ noun }} without {{ nouns }} is truly {{ a_noun }} of {{ adjective }} {{ nouns }}"
 ];
 
 // partial phrases to start with. Capitalized.
